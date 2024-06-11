@@ -2,33 +2,38 @@ using Kolos2.DTO;
 using Kolos2.Service;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Kolos2.Controllers;
-[ApiController]
-[Route("api/[controller]")]
-public class CharactersController : ControllerBase
+namespace Kolos2.Controllers
 {
-    private readonly ICharacterService _characterService;
-    public CharactersController(ICharacterService characterService)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class CharactersController : ControllerBase
     {
-        _characterService = characterService;
-    }
-    [HttpGet("{characterId}")]
-    public ActionResult<CharacterDTO> GetCharacter(int characterId)
-    {
-        var character = _characterService.GetCharacter(characterId);
-        if (character == null)
+        private readonly ICharacterService _characterService;
+
+        public CharactersController(ICharacterService characterService)
         {
-            return NotFound();
+            _characterService = characterService;
         }
-        return Ok(character);
-    }
-    [HttpPost("{characterId}/backpacks")]
-    public ActionResult AddItemsToBackpack(int characterId, [FromBody] List<int> itemIds)
-    {
-        if (!_characterService.AddItemsToBackpack(characterId, itemIds))
+
+        [HttpGet("{characterId}")]
+        public ActionResult<CharacterDTO> GetCharacter(int characterId)
         {
-            return BadRequest();
+            var character = _characterService.GetCharacter(characterId);
+            if (character == null)
+            {
+                return NotFound();
+            }
+            return Ok(character);
         }
-        return Ok();
+
+        [HttpPost("{characterId}/backpacks")]
+        public ActionResult AddItemsToBackpack(int characterId, [FromBody] List<int> itemIds)
+        {
+            if (!_characterService.AddItemsToBackpack(characterId, itemIds))
+            {
+                return BadRequest("Unable to add items to the backpack. Either some items don't exist or the character exceeds the weight limit.");
+            }
+            return Ok();
+        }
     }
 }

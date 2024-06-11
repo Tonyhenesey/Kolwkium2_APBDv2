@@ -24,7 +24,6 @@ public class MyDbContext : Microsoft.EntityFrameworkCore.DbContext
         modelBuilder.Entity<CharacterTitle>()
             .HasKey(ct => new { ct.CharacterId, ct.TitleId });
 
-        // Seed data
         modelBuilder.Entity<Item>().HasData(
             new Item { Id = 1, Name = "Sword", Weight = 10 },
             new Item { Id = 2, Name = "Shield", Weight = 15 },
@@ -51,13 +50,5 @@ public class MyDbContext : Microsoft.EntityFrameworkCore.DbContext
             new CharacterTitle { CharacterId = 1, TitleId = 1, AcquiredAt = DateTime.Now },
             new CharacterTitle { CharacterId = 2, TitleId = 2, AcquiredAt = DateTime.Now }
         );
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer("YourConnectionStringHere");
-        }
     }
 }
